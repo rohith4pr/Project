@@ -1,11 +1,29 @@
 import {BiTrash} from "react-icons/bi";
 
-const AppoinmentInfo = ({ appoinment, onDeleteAppoinment }) => {
+const AppoinmentInfo = ({ appoinment, onDeleteAppoinment,firestore }) => {
+
+  const appointmentRef = firestore.collection('appointments');
+
+  const deleteAppointment = async(id) =>{
+    var query = appointmentRef.where('id','==',id);
+    query.get().then(function(querySnapshot) {
+      querySnapshot.forEach(function(doc) {
+        doc.ref.delete();
+      });
+    });
+    
+  
+  }
+
     return(
         <li className="px-3 py-3 flex items-start">
-            <button onClick={() => onDeleteAppoinment(appoinment.id)} type="button"
+            {/* <button onClick={() => onDeleteAppoinment(appoinment.id)} type="button"
               className="p-1.5 mr-1.5 mt-1 rounded text-white bg-red-500 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-              <BiTrash /></button>
+              <BiTrash /></button> */}
+
+            <button onClick={() => deleteAppointment(appoinment.id)} type="button"
+            className="p-1.5 mr-1.5 mt-1 rounded text-white bg-red-500 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <BiTrash /></button>
               <div className="flex-grow">
                 <div className="flex items-center">
                   <span className="flex-none font-medium text-2xl text-blue-500">{appoinment.petName}</span>

@@ -2,7 +2,8 @@ import { BiCalendar } from "react-icons/bi"
 import Search from "./components/search";
 import AddAppoinment from "./components/appoinment";
 import AppoinmentInfo from "./components/appoinmentinfo";
-import {useState, useEffect, useCallback} from 'react';
+import {useState} from 'react';
+//import {useEffect, useCallback} from 'react';
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
 import firebase from 'firebase/compat/app';
@@ -33,7 +34,10 @@ function App() {
 
 
   const [appoinmentLists] = useCollectionData(Query, {idField: 'id'});
-  console.log(appoinmentLists);
+  if(appoinmentLists != null){
+    appoinmentList = appoinmentLists;
+  }
+  
 
   const filterappoinment = appoinmentList.filter(
     item => {
@@ -51,29 +55,21 @@ function App() {
     )
   })
 
-  const fetchDatas = useCallback(() => {
+  
+
+  // const fetchData = useCallback(() => {
     
 
-    fetch('./data.json')
-    .then(response => response.json())
-    .then(data=>{
-      setAppoinmentList(data)
-    });
-  },[])
+  //   fetch('./data.json')
+  //   .then(response => response.json())
+  //   .then(data=>{
+  //     setAppoinmentList(data)
+  //   });
+  // },[])
 
-  const fetchData = useCallback(() => {
-    
-
-    fetch('./data.json')
-    .then(response => response.json())
-    .then(data=>{
-      setAppoinmentList(data)
-    });
-  },[])
-
-  useEffect(() => {
-    fetchData()
-  },[fetchData]);
+  // useEffect(() => {
+  //   fetchData()
+  // },[fetchData]);
   
   return (
     <div className="App container mx-auto mt-3 font-thin">
@@ -95,8 +91,9 @@ function App() {
       <ul className="divide-y divide-gray-200">
         {filterappoinment
           .map(appoinment => (
-            <AppoinmentInfo key={appoinment}
+            <AppoinmentInfo key={appoinment.id}
             appoinment={appoinment}
+            firestore ={firestore}
             onDeleteAppoinment={
               appoinmentId =>
               setAppoinmentList(appoinmentList.filter(appoinment => appoinment.id !== appoinmentId))
