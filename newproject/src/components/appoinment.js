@@ -1,7 +1,7 @@
 import {BiCalendarPlus} from "react-icons/bi";
 import {useState} from "react";
 
-const AddAppoinment = ({onSendAppoinment, lastId}) => {
+const AddAppoinment = ({firestore,onSendAppoinment, lastId}) => {
     const clearData={
       ownerName: '',
       petName: '',
@@ -9,10 +9,28 @@ const AddAppoinment = ({onSendAppoinment, lastId}) => {
       aptTime: '',
       aptNotes: ''
     }
+
+    const appointmentRef = firestore.collection('appointments');
+
+    const sendAppointment = async() =>{
+      
+      await appointmentRef.add({
+        id: lastId +1,
+        ownerName: formData.ownerName,
+        petName: formData.petName,
+        aptDate: formData.aptDate + '' + formData.aptTime,
+        aptTime: formData.aptTime,
+        aptNotes: formData.aptNotes
+      })
+    
+    }
+
+
     let [toggleForm, setToggleForm] = useState(false)
     let [formData, setFormData] = useState(clearData)
 
     function formDataPublish() {
+      sendAppointment();
       const appoinmentInfo = {
         id: lastId +1,
         ownerName: formData.ownerName,
